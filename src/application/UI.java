@@ -1,6 +1,10 @@
 package application;
 
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
 import chess.ChessPiece;
+import chess.ChessPosition;
 import chess.Color;
 
 public class UI {
@@ -55,5 +59,19 @@ public class UI {
             }
         }
         System.out.print(" ");
+	}
+	
+	public static ChessPosition readChessPosition(Scanner sc) {
+		try {
+			String position = sc.nextLine();
+			char column = position.toLowerCase().charAt(0);
+			int row = Integer.parseInt(position.substring(1));
+			
+			return new ChessPosition(column, row);
+		} catch (RuntimeException e) {
+			throw new InputMismatchException("Erro lendo posição de xadrez! Valores válidos: "
+					+ "a1 até h8");
+		}
+		
 	}
 }

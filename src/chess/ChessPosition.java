@@ -7,13 +7,13 @@ public class ChessPosition {
 	private char column;
 	private int row;
 	
-	public ChessPosition(int row, char column) {
+	public ChessPosition(char column, int row) {
 		if (column < 'a' || column > 'h' || row < 1 || row > 8) {
 			throw new ChessException("Valores válidos vão de a1 até h8!");
 		}
 		
-		this.row = row;
 		this.column = column;
+		this.row = row;
 	}
 	
 	
@@ -30,8 +30,8 @@ public class ChessPosition {
 	}
 	
 	protected static ChessPosition fromPosition(Position position) {
-		return new ChessPosition(8 - position.getRow(), (char)('a' - 
-				position.getColumn()));
+		return new ChessPosition((char)('a' - position.getColumn()), 
+				8 - position.getRow());
 	}
 	
 	@Override
