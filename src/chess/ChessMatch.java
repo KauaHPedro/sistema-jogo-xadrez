@@ -52,6 +52,12 @@ public class ChessMatch {
 		board.placePiece(piece, new ChessPosition(column, row).toPosition());
 	}
 	
+	public boolean[][] possibleMoves(ChessPosition sourcePosition) {
+		Position position = sourcePosition.toPosition();
+		validateSourcePosition(position);
+		return board.piecePosition(position).possibleMoves();
+	}
+	
 	public ChessPiece performChessMove(ChessPosition sourcePosition, 
 			ChessPosition targetPosition) {
 		Position source = sourcePosition.toPosition();
@@ -85,5 +91,7 @@ public class ChessMatch {
 			throw new ChessException("Movimento de destino inválido!");
 		};
 	}
+	
+	
 
 }
