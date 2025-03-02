@@ -95,6 +95,10 @@ public class UI {
 		printCapturedPieces(captured);
 		System.out.println("Turno: " + chessMatch.getTurn());
 		System.out.println("Esperando o jogador das peças " + chessMatch.getCurrentPlayer());
+		
+		if (chessMatch.isCheck()) {
+			System.out.println("CHEQUE!");
+		}
 	}
 
 	public static ChessPosition readChessPosition(Scanner sc) {
