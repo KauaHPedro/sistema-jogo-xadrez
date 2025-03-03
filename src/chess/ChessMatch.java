@@ -1,6 +1,5 @@
 package chess;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -134,7 +133,7 @@ public class ChessMatch {
 		if(movedPiece instanceof Pawn) {
 			if(target.getRow() == 0 || target.getRow() == 7) {
 				promoted = (ChessPiece)board.piecePosition(target);
-				promoted = replacePromotedPiece("Q");
+				//promoted = replacePromotedPiece("Q");
 			}
 		}
 
@@ -167,7 +166,7 @@ public class ChessMatch {
 		}
 		if (!type.equalsIgnoreCase("b") && !type.equalsIgnoreCase("n")
 				&& !type.equalsIgnoreCase("r") && !type.equalsIgnoreCase("q")) {
-			throw new InvalidParameterException("Peça inválida para promoção!");
+			return promoted;
 		}
 		
 		Position posPromoted = promoted.getChessPosition().toPosition();
@@ -177,6 +176,9 @@ public class ChessMatch {
 		ChessPiece promotedPiece = newPiece(type, promoted.getColor());
 		board.placePiece(promotedPiece, posPromoted);
 		piecesOnTheBoard.add(promotedPiece);
+		
+		check = testCheck(currentPlayer) ? true : false;
+		checkMate = testCheckMate(currentPlayer) ? true : false;
 		
 		return promotedPiece;
 	}
