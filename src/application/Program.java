@@ -35,8 +35,15 @@ public class Program {
 				ChessPosition target = UI.readChessPosition(sc);
 				
 				ChessPiece capturedPiece = chessMatch.performChessMove(source, target);
+				
 				if (capturedPiece != null) {
 					captured.add(capturedPiece);
+				}
+				
+				if(chessMatch.getPromoted() != null) {
+					System.out.print("Digite a peça para ser promovida (B/N/R/Q): ");
+					String promotedPiece = sc.nextLine().toLowerCase();
+					chessMatch.replacePromotedPiece(promotedPiece);
 				}
 				
 			} catch (ChessException e) {
