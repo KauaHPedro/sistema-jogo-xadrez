@@ -133,7 +133,7 @@ public class ChessMatch {
 		if(movedPiece instanceof Pawn) {
 			if(target.getRow() == 0 || target.getRow() == 7) {
 				promoted = (ChessPiece)board.piecePosition(target);
-				//promoted = replacePromotedPiece("Q");
+				promoted = replacePromotedPiece("Q");
 			}
 		}
 
