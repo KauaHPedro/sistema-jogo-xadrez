@@ -2,13 +2,17 @@ package chess.pieces;
 
 import boardgame.Board;
 import boardgame.Position;
+import chess.ChessMatch;
 import chess.ChessPiece;
 import chess.Color;
 
 public class King extends ChessPiece {
+	
+	private ChessMatch chessMatch;
 
-	public King(Board board, Color color) {
+	public King(Board board, Color color, ChessMatch chessMatch) {
 		super(board, color);
+		this.chessMatch = chessMatch;
 	}
 	
 	@Override
@@ -38,7 +42,41 @@ public class King extends ChessPiece {
 			}
 		}
 		
+		//SpecialMove Castling (Roque)
+		//roque menor
+		if(getMoveCount() == 0 && !chessMatch.isCheck()) {
+			Position posRook1 = new Position (position.getRow(), position.getColumn() + 3);
+			
+			if (testRookCastling(posRook1)) {
+				Position right1 = new Position(position.getRow(), position.getColumn() + 1);
+				Position right2 = new Position(position.getRow(), position.getColumn() + 2);
+				
+				if (!getBoard().thereIsAPiece(right1) && !getBoard().thereIsAPiece(right2)) {
+					posicoes[right2.getRow()][right2.getColumn()] = true;
+				}
+			}
+			
+			//roque grande
+			Position posRook2 = new Position (position.getRow(), position.getColumn() - 4);
+			if(testRookCastling(posRook2)) {
+				Position left1 = new Position(position.getRow(), position.getColumn() - 1);
+				Position left2 = new Position(position.getRow(), position.getColumn() - 2);
+				Position left3 = new Position(position.getRow(), position.getColumn() - 3);
+				
+				if(!getBoard().thereIsAPiece(left1) && !getBoard().thereIsAPiece(left2) &&
+						!getBoard().thereIsAPiece(left3)) {
+					posicoes[left2.getRow()][left2.getColumn()] = true;
+				}
+			}
+		}
+		
 		return posicoes;
+	}
+	
+	private boolean testRookCastling(Position position) {
+		ChessPiece piece = (ChessPiece) getBoard().piecePosition(position);
+		return piece != null && piece instanceof Rook && 
+				piece.getMoveCount() == 0 && piece.getColor() == getColor();
 	}
 
 }
