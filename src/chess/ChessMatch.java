@@ -23,6 +23,7 @@ public class ChessMatch {
 	private List<Piece> capturedPieces = new ArrayList<>();
 	private boolean check;
 	private boolean checkMate;
+	private ChessPiece enPassantVulnerable;
 
 	public ChessMatch() {
 		board = new Board(8, 8);
@@ -34,6 +35,11 @@ public class ChessMatch {
 
 	public int getTurn() {
 		return turn;
+	}
+	
+
+	public ChessPiece getEnPassantVulnerable() {
+		return enPassantVulnerable;
 	}
 
 	public boolean isCheck() {
@@ -71,7 +77,7 @@ public class ChessMatch {
 
 		// peões
 		for (char coluna = 'a'; coluna <= 'h'; coluna++) {
-			placeNewPiece(coluna, 2, new Pawn(board, Color.BRANCAS));
+			placeNewPiece(coluna, 2, new Pawn(board, Color.BRANCAS, this));
 		}
 
 		placeNewPiece('a', 8, new Rook(board, Color.PRETAS));
@@ -85,7 +91,7 @@ public class ChessMatch {
 
 		// peões
 		for (char coluna = 'a'; coluna <= 'h'; coluna++) {
-			placeNewPiece(coluna, 7, new Pawn(board, Color.PRETAS));
+			placeNewPiece(coluna, 7, new Pawn(board, Color.PRETAS, this));
 		}
 	}
 
@@ -111,6 +117,8 @@ public class ChessMatch {
 			undoMove(source, target, capturedPiece);
 			throw new ChessException("Você não pode se colocar em cheque!");
 		}
+		
+		ChessPiece movedPiece = (ChessPiece)board.piecePosition(target);
 
 		if (testCheck(oponnent(currentPlayer))) {
 			check = true;
@@ -122,6 +130,14 @@ public class ChessMatch {
 			checkMate = true;
 		} else {
 			nextTurn();
+		}
+		
+		//en passant
+		if(movedPiece instanceof Pawn && target.getRow() == source.getRow() - 2
+				|| target.getRow() == source.getRow() + 2) {
+			enPassantVulnerable = movedPiece;
+		} else {
+			enPassantVulnerable = null;
 		}
 
 		return (ChessPiece) capturedPiece;
@@ -155,6 +171,21 @@ public class ChessMatch {
 			board.placePiece(rook, targetRook);
 			rook.increaseMoveCount();
 		}
+		
+		//enPassant
+		if(piece instanceof Pawn) {
+			if(source.getColumn() != target.getColumn() && capturedPiece == null) {
+				Position posPawn;
+				if (piece.getColor() == Color.BRANCAS ) {
+					posPawn = new Position(target.getRow() + 1, target.getColumn());
+				} else {
+					posPawn = new Position(target.getRow() - 1, target.getColumn());
+				}
+				capturedPiece = board.removePiece(posPawn);
+				capturedPieces.add(capturedPiece);
+				piecesOnTheBoard.remove(capturedPiece);
+			}
+		}
 
 		return capturedPiece;
 	}
@@ -186,6 +217,20 @@ public class ChessMatch {
 			ChessPiece rook = (ChessPiece) board.removePiece(targetRook);
 			board.placePiece(rook, sourceRook);
 			rook.decreaseMoveCount();
+		}
+		
+		//enpassant
+		if(piece instanceof Pawn) {
+			if(source.getColumn() != target.getColumn() && capturedPiece == enPassantVulnerable) {
+				ChessPiece pawn = (ChessPiece)board.removePiece(target);
+				Position posPawn;
+				if (piece.getColor() == Color.BRANCAS) {
+					posPawn = new Position(3, target.getColumn());
+				} else {
+					posPawn = new Position(4, target.getColumn());
+				}
+				board.placePiece(pawn, posPawn);
+			}
 		}
 	}
 
