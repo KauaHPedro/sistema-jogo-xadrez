@@ -2,6 +2,7 @@
 
 ## 📌 Sobre o Projeto
 Este projeto é um jogo de xadrez implementado em Java, utilizando conceitos fundamentais da Programação Orientada a Objetos (POO). O sistema permite a execução de partidas com regras completas do xadrez, incluindo captura de peças, xeque, xeque-mate, roque, en passant e promoção de peões.
+A ideia do projeto primordialmente é revisar e praticar os conceitos de POO, portanto ainda não foi aprofundada a questão de interface gráfica ou até mesmo execução na Web. Hoje o jogo roda apenas via terminal, mas o projeto serviu como uma boa base de estudos.
 
 ## 🎯 Funcionalidades
 - Gerenciamento de um tabuleiro de xadrez 8x8.
