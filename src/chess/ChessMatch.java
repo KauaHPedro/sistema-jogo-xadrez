@@ -23,6 +23,7 @@ public class ChessMatch {
 	private List<Piece> capturedPieces = new ArrayList<>();
 	private boolean check;
 	private boolean checkMate;
+	private boolean stalemate; //empate afogamento
 	private ChessPiece enPassantVulnerable;
 	private ChessPiece promoted;
 
@@ -54,6 +55,10 @@ public class ChessMatch {
 
 	public boolean isCheckMate() {
 		return checkMate;
+	}
+	
+	public boolean isStalemate() {
+		return stalemate;
 	}
 
 	public Color getCurrentPlayer() {
@@ -99,7 +104,7 @@ public class ChessMatch {
 		// peões
 		for (char coluna = 'a'; coluna <= 'h'; coluna++) {
 			placeNewPiece(coluna, 7, new Pawn(board, Color.PRETAS, this));
-		}
+		} 
 	}
 
 	private void placeNewPiece(char column, int row, ChessPiece piece) {
@@ -137,17 +142,20 @@ public class ChessMatch {
 			}
 		}
 
-		if (testCheck(oponnent(currentPlayer))) {
+		if (testCheck(opponent(currentPlayer))) {
 			check = true;
 		} else {
 			check = false;
 		}
 
-		if (testCheckMate(oponnent(currentPlayer))) {
+		if (testCheckMate(opponent(currentPlayer))) {
 			checkMate = true;
+		} else if (testStalemate(opponent(currentPlayer))) {
+			stalemate = true;
 		} else {
 			nextTurn();
 		}
+		
 		
 		//en passant
 		if(movedPiece instanceof Pawn && target.getRow() == source.getRow() - 2
@@ -318,7 +326,7 @@ public class ChessMatch {
 		}
 	}
 
-	private Color oponnent(Color color) {
+	private Color opponent(Color color) {
 		if (color == Color.BRANCAS) {
 			return Color.PRETAS;
 		} else {
@@ -341,7 +349,7 @@ public class ChessMatch {
 	private boolean testCheck(Color color) {
 		Position kingPosition = king(color).getChessPosition().toPosition();
 		List<Piece> opponentPieces = piecesOnTheBoard.stream()
-				.filter(piece -> ((ChessPiece) piece).getColor() == oponnent(color)).collect(Collectors.toList());
+				.filter(piece -> ((ChessPiece) piece).getColor() == opponent(color)).collect(Collectors.toList());
 
 		for (Piece piece : opponentPieces) {
 			boolean[][] matrizAux = piece.possibleMoves();
@@ -375,6 +383,27 @@ public class ChessMatch {
 						if (!testCheck) {
 							return false;
 						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	private boolean testStalemate (Color color) {
+		if (testCheck(color)) {
+			return false;
+		}
+		
+		List<Piece> playerPieces = piecesOnTheBoard.stream().filter(piece -> 
+		((ChessPiece) piece).getColor() == color).collect(Collectors.toList());
+		
+		for(Piece piece : playerPieces) {
+			boolean[][] validMoves = piece.possibleMoves();
+			for(int i = 0; i < validMoves.length; i++) {
+				for(int j = 0; j < validMoves[i].length; j++) {
+					if (validMoves[i][j]) {
+						return false;
 					}
 				}
 			}

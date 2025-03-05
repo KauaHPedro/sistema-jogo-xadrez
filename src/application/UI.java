@@ -95,16 +95,19 @@ public class UI {
 		printCapturedPieces(captured);
 		System.out.println("Turno: " + chessMatch.getTurn());
 
-		if (!chessMatch.isCheckMate()) {
-			System.out.println("Esperando o jogador das peças " + chessMatch.getCurrentPlayer());
-
-			if (chessMatch.isCheck()) {
-				System.out.println("CHEQUE!");
-			}
+		if (chessMatch.isCheckMate()) {
+		    System.out.println("CHEQUE-MATE!");
+		    System.out.println("Vencedor: " + chessMatch.getCurrentPlayer());
+		} else if (chessMatch.isStalemate()) { 
+		    System.out.println("EMPATE POR AFOGAMENTO!");
 		} else {
-			System.out.println("CHEQUE-MATE!");
-			System.out.println("Vencedor: " + chessMatch.getCurrentPlayer());
+		    System.out.println("Esperando o jogador das peças " + chessMatch.getCurrentPlayer());
+
+		    if (chessMatch.isCheck()) {
+		        System.out.println("CHEQUE!");
+		    }
 		}
+
 	}
 
 	public static ChessPosition readChessPosition(Scanner sc) {
